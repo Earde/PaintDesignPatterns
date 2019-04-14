@@ -1,30 +1,34 @@
-﻿using System;
+﻿using PaintDesignPatterns.Drawers;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PaintDesignPatterns
+namespace PaintDesignPatterns.Shapes
 {
     class BasicShape : Shape
     {
         private Drawer drawer;
         private Point startPoint;
         private Point endPoint;
-        Pen pen;
 
-        public BasicShape(Point start, Point end, Drawer drwr, Pen p)
+        public BasicShape(Point start, Point end, Drawer drwr)
         {
             startPoint = start;
             endPoint = end;
             drawer = drwr;
-            pen = p;
         }
 
         public override void Draw(Graphics g)
         {
             drawer.Draw(g, pen, GetCoordinates());
+            if (IsSelected)
+            {
+                Rectangle rect = GetCoordinates();
+                drawer.Draw(g, hightlightPen, new Rectangle(rect.Left - 3, rect.Top - 3, rect.Width + 6, rect.Height + 6));
+            }
         }
 
         public override Rectangle GetCoordinates()
@@ -42,15 +46,16 @@ namespace PaintDesignPatterns
             endPoint.Y += dy;
         }
 
-        public override void Resize(int x, int y)
+        public override void Resize(int dx, int dy)
         {
-            endPoint = new Point(x, y);
+            endPoint.X += dx;
+            endPoint.Y += dy;
         }
 
-        public override bool Select(int x, int y)
+        public override string ToString()
         {
             Rectangle rect = GetCoordinates();
-            return rect.Left <= x && rect.Right >= x && rect.Top <= y && rect.Bottom >= y;
+            return string.Format("{0} {1} {2} {3} {4}\r\n", drawer.ToString(), rect.Left.ToString(), rect.Top.ToString(), rect.Width.ToString(), rect.Height.ToString());
         }
     }
 }

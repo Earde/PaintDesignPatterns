@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PaintDesignPatterns
+namespace PaintDesignPatterns.Drawers
 {
-    abstract class Drawer
+    interface Drawer
     {
-        public abstract void Draw(Graphics g, Pen pen, Rectangle rect);
-        public abstract override string ToString();
+        void Draw(Graphics g, Pen pen, Rectangle rect);
+        string ToString();
     }
 }

@@ -9,14 +9,14 @@ namespace PaintDesignPatterns.Drawers
 {
     class EllipsDrawer : Drawer
     {
-        public override void Draw(Graphics g, Pen pen, Rectangle rect)
+        public void Draw(Graphics g, Pen pen, Rectangle rect)
         {
             g.DrawEllipse(pen, rect);
         }
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return "ellipse";
         }
     }
 }
