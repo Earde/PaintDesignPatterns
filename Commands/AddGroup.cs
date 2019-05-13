@@ -3,41 +3,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PaintDesignPatterns.Entity;
 using PaintDesignPatterns.Shapes;
 
 namespace PaintDesignPatterns.Commands
 {
     class AddGroup : ICommand
     {
-        List<Shape> shapes;
-        GroupShape group;
+        ShapeList shapes;
+        CaptionShape group;
 
-        public AddGroup(List<Shape> shapes)
+        public AddGroup(ShapeList shapes)
         {
             this.shapes = shapes;
+            group = new CaptionShape(new GroupShape(shapes));
         }
 
         public void Execute(ref Context context)
         {
-            group = new GroupShape(shapes);
             group.IsSelected = true;
-            foreach (Shape s in shapes)
+            foreach (CaptionShape s in shapes.Get())
             {
                 s.IsSelected = false;
-                context.shapes.Remove(s);
+                context.shapes.Detach(s);
             }
-            context.shapes.Add(group);
+            context.shapes.Attach(group);
             context.drawPanel.Invalidate();
         }
 
         public void Undo(ref Context context)
         {
-            context.shapes.Remove(group);
-            group = null;
-            foreach (Shape s in shapes)
+            context.shapes.Detach(group);
+            foreach (CaptionShape s in shapes.Get())
             {
                 s.IsSelected = true;
-                context.shapes.Add(s);
+                context.shapes.Attach(s);
             }
             context.drawPanel.Invalidate();
         }

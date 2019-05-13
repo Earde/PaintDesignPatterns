@@ -1,4 +1,4 @@
-﻿using PaintDesignPatterns.Drawers;
+﻿using PaintDesignPatterns.Entity;
 using PaintDesignPatterns.Shapes;
 using System;
 using System.Collections.Generic;
@@ -6,28 +6,27 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace PaintDesignPatterns.Commands
 {
-    class AddRectangle : ICommand
+    class AddShape : ICommand
     {
-        private Shape shape;
+        private CaptionShape shape;
 
-        public AddRectangle(Shape shape)
+        public AddShape(Shape shape)
         {
-            this.shape = shape;
+            this.shape = new CaptionShape(shape);
         }
 
         public void Execute(ref Context context)
         {
-            context.shapes.Add(shape);
+            context.shapes.Attach(shape);
             context.drawPanel.Invalidate();
         }
 
         public void Undo(ref Context context)
         {
-            context.shapes.Remove(shape);
+            context.shapes.Detach(shape);
             context.drawPanel.Invalidate();
         }
     }

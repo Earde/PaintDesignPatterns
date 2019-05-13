@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace PaintDesignPatterns
+namespace PaintDesignPatterns.Entity
 {
     class Context
     {
@@ -18,7 +18,7 @@ namespace PaintDesignPatterns
         public Stack<ICommand> redoStack = new Stack<ICommand>();
         //Drawn shapes and Temporary shape for action visualization
         public Shape tempShape = null;
-        public List<Shape> shapes = new List<Shape>();
+        public ShapeList shapes = new ShapeList();
 
         public Context(Panel panel)
         {

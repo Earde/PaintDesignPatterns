@@ -1,4 +1,5 @@
 ﻿using PaintDesignPatterns.Commands;
+using PaintDesignPatterns.Entity;
 using PaintDesignPatterns.Shapes;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Windows.Forms;
 
 namespace PaintDesignPatterns.State
 {
+    //Handling mouse for drawing panel
     interface IState
     {
         void handleMouseDown(ref Context context, MouseEventArgs e);

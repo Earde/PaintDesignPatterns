@@ -9,7 +9,7 @@ namespace PaintDesignPatterns.Drawers
 {
     interface Drawer
     {
-        void Draw(Graphics g, Pen pen, Rectangle rect);
+        void Draw(Graphics g, Pen pen, Rectangle rect, Pen highlightPen, bool isSelected);
         string ToString();
     }
 }

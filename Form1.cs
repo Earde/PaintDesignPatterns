@@ -1,5 +1,7 @@
-﻿using PaintDesignPatterns.Commands;
+﻿using PaintDesignPatterns.Action;
+using PaintDesignPatterns.Commands;
 using PaintDesignPatterns.Drawers;
+using PaintDesignPatterns.Entity;
 using PaintDesignPatterns.Shapes;
 using PaintDesignPatterns.State;
 using System;
@@ -20,13 +22,15 @@ namespace PaintDesignPatterns
         //Button handlers
         bool mouseDown = false;
         IState state = new RectangleState();
+        IAction action = null;
 
         Context context;
 
         public Form1()
         {
             InitializeComponent();
-            context = new Context(this.drawPanel);
+            positionText.SelectedIndex = 0;
+            context = new Context(drawPanel);
         }
 
         private void drawPanel_MouseMove(object sender, MouseEventArgs e)
@@ -55,29 +59,9 @@ namespace PaintDesignPatterns
             {
                 context.tempShape.Draw(e.Graphics);
             }
-            foreach (Shape shape in context.shapes)
+            foreach (Shape shape in context.shapes.Get())
             {
                 shape.Draw(e.Graphics);
-            }
-        }
-
-        private void btnUndo_Click(object sender, EventArgs e)
-        {
-            if (context.undoStack.Count > 0)
-            {
-                ICommand c = context.undoStack.Pop();
-                context.redoStack.Push(c);
-                c.Undo(ref context);
-            }
-        }
-
-        private void btnRedo_Click(object sender, EventArgs e)
-        {
-            if (context.redoStack.Count > 0)
-            {
-                ICommand c = context.redoStack.Pop();
-                context.undoStack.Push(c);
-                c.Execute(ref context);
             }
         }
 
@@ -106,55 +90,40 @@ namespace PaintDesignPatterns
             state = new ResizeState();
         }
 
+        private void btnUndo_Click(object sender, EventArgs e)
+        {
+            action = new UndoAction();
+            action.OnClick(ref context);
+        }
+
+        private void btnRedo_Click(object sender, EventArgs e)
+        {
+            action = new RedoAction();
+            action.OnClick(ref context);
+        }
+
         private void btnGroup_Click(object sender, EventArgs e)
         {
-            List<Shape> selectedShapes = context.shapes.FindAll(shape => shape.IsSelected);
-            if (selectedShapes.Count > 0)
-            {
-                ICommand c = new AddGroup(selectedShapes);
-                context.undoStack.Push(c);
-                context.redoStack.Clear();
-                c.Execute(ref context);
-            }
+            action = new MakeGroupAction();
+            action.OnClick(ref context);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\testPaintImage.txt";
-            using (StreamWriter w = File.CreateText(path))
-            {
-                foreach (Shape s in context.shapes)
-                {
-                    w.Write(s.ToString());
-                }
-            }
+            action = new SaveAction();
+            action.OnClick(ref context);
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\testPaintImage.txt";
-            List<Shape> tempShapes;
-            using (StreamReader r = File.OpenText(path))
-            {
-                tempShapes = new List<Shape>();
-                string line = r.ReadLine();
-                if (line.StartsWith("group"))
-                {
-                    for (int i = 0; i < int.Parse(line.Split(' ')[1]); i++)
-                    {
-                        line = r.ReadLine();
-                        string[] split = line.Split(' ');
-                        if (split[0].Equals("rectangle"))
-                        {
-                            
-                        }
-                    }
-                }
-                else
-                {
-                    string[] split = line.Split(' ');
-                }
-            }
+            action = new LoadAction();
+            action.OnClick(ref context);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            action = new CaptionAction(captionText.Text, positionText.Text);
+            action.OnClick(ref context);
         }
     }
 }

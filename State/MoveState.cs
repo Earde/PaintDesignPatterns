@@ -6,7 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using PaintDesignPatterns.Commands;
+using PaintDesignPatterns.Entity;
 using PaintDesignPatterns.Shapes;
+using PaintDesignPatterns.Visitors;
 
 namespace PaintDesignPatterns.State
 {
@@ -26,13 +28,7 @@ namespace PaintDesignPatterns.State
 
         public void handleMouseMove(ref Context context, MouseEventArgs e)
         {
-            foreach (Shape s in context.shapes)
-            {
-                if (s.IsSelected)
-                {
-                    s.Move(e.X - lastPoint.X, e.Y - lastPoint.Y);
-                }
-            }
+            context.shapes.Accept(new MoveVisitor(e.X - lastPoint.X, e.Y - lastPoint.Y));
             lastPoint = new Point(e.X, e.Y);
             context.drawPanel.Invalidate();
         }
@@ -42,13 +38,9 @@ namespace PaintDesignPatterns.State
             context.drawPanel.Cursor = Cursors.Arrow;
             endPoint = new Point(e.X, e.Y);
             if (endPoint.X == initPoint.X && endPoint.Y == initPoint.Y) return;
-            List<Shape> shapes = context.shapes.FindAll(shape => shape.IsSelected);
-            if (shapes.Count > 0)
+            ShapeList shapes = new ShapeList(context.shapes.Get().FindAll(shape => shape.IsSelected));
+            if (shapes.IsNotEmpty())
             {
-                foreach (Shape s in shapes)
-                {
-                    s.Move(initPoint.X - endPoint.X, initPoint.Y - endPoint.Y);
-                }
                 ICommand c = new AddMove(shapes, new Point(endPoint.X - initPoint.X, endPoint.Y - initPoint.Y));
                 context.undoStack.Push(c);
                 context.redoStack.Clear();

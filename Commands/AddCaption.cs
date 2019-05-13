@@ -1,31 +1,33 @@
-﻿using PaintDesignPatterns.Shapes;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PaintDesignPatterns.Entity;
+using PaintDesignPatterns.Shapes;
 
 namespace PaintDesignPatterns.Commands
 {
-    class AddEllips : ICommand
+    class AddCaption : ICommand
     {
-        private Shape shape;
+        CaptionShape shape;
+        Ornament ornament;
 
-        public AddEllips(Shape shape)
+        public AddCaption(CaptionShape shape, Ornament ornament)
         {
             this.shape = shape;
+            this.ornament = ornament;
         }
 
         public void Execute(ref Context context)
         {
-            context.shapes.Add(shape);
+            shape.AddOrnament(ornament);
             context.drawPanel.Invalidate();
         }
 
         public void Undo(ref Context context)
         {
-            context.shapes.Remove(shape);
+            shape.RemoveOrnament(ornament);
             context.drawPanel.Invalidate();
         }
     }

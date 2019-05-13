@@ -1,4 +1,5 @@
 ﻿using PaintDesignPatterns.Drawers;
+using PaintDesignPatterns.Visitors;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -21,14 +22,14 @@ namespace PaintDesignPatterns.Shapes
             drawer = drwr;
         }
 
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         public override void Draw(Graphics g)
         {
-            drawer.Draw(g, pen, GetCoordinates());
-            if (IsSelected)
-            {
-                Rectangle rect = GetCoordinates();
-                drawer.Draw(g, hightlightPen, new Rectangle(rect.Left - 3, rect.Top - 3, rect.Width + 6, rect.Height + 6));
-            }
+            drawer.Draw(g, pen, GetCoordinates(), highlightPen, IsSelected);
         }
 
         public override Rectangle GetCoordinates()

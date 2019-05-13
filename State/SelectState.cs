@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using PaintDesignPatterns.Commands;
+using PaintDesignPatterns.Entity;
 using PaintDesignPatterns.Shapes;
 
 namespace PaintDesignPatterns.State
@@ -26,11 +27,11 @@ namespace PaintDesignPatterns.State
         public void handleMouseUp(ref Context context, MouseEventArgs e)
         {
             context.drawPanel.Cursor = Cursors.Arrow;
-            for (int i = context.shapes.Count - 1; i >= 0; i--)
+            for (int i = context.shapes.Get().Count - 1; i >= 0; i--)
             {
-                if (context.shapes[i].Select(e.X, e.Y))
+                if (context.shapes.Get()[i].Select(e.X, e.Y))
                 {
-                    ICommand c = new AddSelect(context.shapes[i]);
+                    ICommand c = new AddSelect(context.shapes.Get()[i]);
                     context.undoStack.Push(c);
                     context.redoStack.Clear();
                     c.Execute(ref context);

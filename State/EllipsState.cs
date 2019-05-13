@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using PaintDesignPatterns.Commands;
 using PaintDesignPatterns.Drawers;
+using PaintDesignPatterns.Entity;
 using PaintDesignPatterns.Shapes;
 
 namespace PaintDesignPatterns.State
@@ -21,7 +22,7 @@ namespace PaintDesignPatterns.State
             context.drawPanel.Cursor = Cursors.Arrow;
             initPoint = new Point(e.X, e.Y);
             lastPoint = new Point(e.X, e.Y);
-            context.tempShape = new BasicShape(initPoint, initPoint, new EllipsDrawer());
+            context.tempShape = new BasicShape(initPoint, initPoint, EllipsDrawer.Instance);
         }
 
         public void handleMouseMove(ref Context context, MouseEventArgs e)
@@ -36,7 +37,7 @@ namespace PaintDesignPatterns.State
             context.drawPanel.Cursor = Cursors.Arrow;
             Rectangle rect = context.tempShape.GetCoordinates();
             if (rect.Width == 0 || rect.Height == 0) return; //don't add empty shape
-            ICommand c = new AddEllips(context.tempShape);
+            ICommand c = new AddShape(context.tempShape);
             context.undoStack.Push(c);
             context.redoStack.Clear();
             c.Execute(ref context);

@@ -1,4 +1,5 @@
-﻿using PaintDesignPatterns.Shapes;
+﻿using PaintDesignPatterns.Entity;
+using PaintDesignPatterns.Shapes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
