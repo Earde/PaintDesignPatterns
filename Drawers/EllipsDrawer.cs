@@ -9,6 +9,7 @@ namespace PaintDesignPatterns.Drawers
 {
     class EllipsDrawer : Drawer
     {
+        // Singleton pattern
         private static EllipsDrawer drawer = null;
         public static EllipsDrawer Instance {
             get {
