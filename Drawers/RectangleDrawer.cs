@@ -9,6 +9,7 @@ namespace PaintDesignPatterns.Drawers
 {
     class RectangleDrawer : Drawer
     {
+        // Singleton pattern
         private static RectangleDrawer drawer = null;
         public static RectangleDrawer Instance {
             get {
